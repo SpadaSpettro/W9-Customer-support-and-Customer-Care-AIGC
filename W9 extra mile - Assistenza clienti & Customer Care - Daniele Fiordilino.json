@@ -1,0 +1,673 @@
+{
+  "name": "W9 extra mile - Assistenza clienti & Customer Care - Daniele Fiordilino",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "app2eQXE15kB0Hs1G",
+          "mode": "list",
+          "cachedResultName": "Base",
+          "cachedResultUrl": "https://airtable.com/app2eQXE15kB0Hs1G"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblIOGD0MR4vl323u",
+          "mode": "list",
+          "cachedResultName": "[W9] - Assistenza clienti & Customer Care",
+          "cachedResultUrl": "https://airtable.com/app2eQXE15kB0Hs1G/tblIOGD0MR4vl323u"
+        },
+        "options": {
+          "fields": [
+            "Domanda",
+            "Risposta"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -896,
+        160
+      ],
+      "id": "c8789a02-6416-4505-912a-dc8032b1b55a",
+      "name": "Search records",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "yIQnWS75MrmqGBYI",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "Domanda",
+              "renameField": true,
+              "outputFieldName": "Domande"
+            },
+            {
+              "fieldToAggregate": "Richiesta e risposta",
+              "renameField": true,
+              "outputFieldName": "Richieste e risposte"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        256
+      ],
+      "id": "793bc867-bf5f-4936-bc17-c1340aa2c737",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "path": "c425ead4-6886-4246-9cd9-38d619e2a59f",
+        "responseMode": "responseNode",
+        "options": {
+          "ignoreBots": true
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1344,
+        256
+      ],
+      "id": "2e9f657d-814b-431a-855c-6dd601650fac",
+      "name": "Webhook",
+      "webhookId": "c425ead4-6886-4246-9cd9-38d619e2a59f"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.html }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html; charset=utf-8"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        800,
+        256
+      ],
+      "id": "2bed1a25-261a-47f1-a1b5-fb751dd1fa77",
+      "name": "Respond to Webhook",
+      "alwaysOutputData": true,
+      "notesInFlow": true,
+      "notes": "Questo nodo risponde al webhook iniziale con la pagina web generata poc'anzi."
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        16,
+        224
+      ],
+      "id": "406076c6-922a-4c4a-9d6a-56d8e698ce5d",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "M5znk5f1CeiRvNeL",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"analisi_richieste\": [\n    {\n      \"tema_principale\": \"Nome del 1° tema (es. Problemi di Login)\",\n      \"conteggio_richieste\": \"Numero di domande su questo tema\"\n    },\n    {\n      \"tema_principale\": \"Nome del 2° tema (es. Funzionalità API)\",\n      \"conteggio_richieste\": \"Numero di domande su questo tema\"\n    },\n    {\n      \"tema_principale\": \"Nome del 3° tema (es. Fatturazione)\",\n      \"conteggio_richieste\": \"Numero di domande su questo tema\"\n    }\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        144,
+        224
+      ],
+      "id": "1f1aeac5-0e32-4ea4-856c-702b43a71059",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        352,
+        256
+      ],
+      "id": "180cf5b7-3b91-42a0-a4a0-a4c34e076e92",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "caf6a115-4639-43af-af6e-69b9965cea72",
+              "name": "Richieste e risposte",
+              "value": "={{ ($json['Richieste e risposte']).join(\"\") }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        64,
+        400
+      ],
+      "id": "c12503ad-3029-4e64-b932-3364fb45d75f",
+      "name": "Edit Fields1",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analizza il seguente set di dati di richieste:\n{{ $json.Domande }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Sei un analista di dati esperto in richieste e tendenze. Il tuo compito è analizzare il testo fornito, identificare i temi principali e produrre una statistica esatta.  **Istruzioni:** 1.  Individua i **3 temi di richiesta più frequenti** presenti nei dati. 2.  Per ciascuno di questi 3 temi, calcola il **numero esatto di richieste** che vi si riferiscono. 3.  Il tuo output DEVE essere un oggetto JSON valido, seguendo esattamente lo schema fornito.  **Formato di Output JSON richiesto:** {   \"analisi_richieste\": [     {       \"tema_principale\": \"Nome del 1° tema (es. Problemi di Login)\",       \"conteggio_richieste\": \"Numero di domande su questo tema\"     },     {       \"tema_principale\": \"Nome del 2° tema (es. Funzionalità API)\",       \"conteggio_richieste\": \"Numero di domande su questo tema\"     },     {       \"tema_principale\": \"Nome del 3° tema (es. Fatturazione)\",       \"conteggio_richieste\": \"Numero di domande su questo tema\"     }   ] }"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        0,
+        0
+      ],
+      "id": "dba2ab96-2fa6-4f4b-aea2-99619e15b10c",
+      "name": "Analizza temi"
+    },
+    {
+      "parameters": {
+        "html": "<!DOCTYPE html>\n<html lang=\"it\">\n<head>\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>[W9] - Assistenza clienti & Customer Care</title>\n  <style>\n    /* CSS per lo sfondo e il layout generale */\n    body {\n      font-family: 'Arial', sans-serif;\n      background-color: #0d1117;\n      color: #c9d1d9;\n      min-height: 100vh;\n      text-align: center;\n    }\n    /* CSS per il menu dropdown */\n    .dropdown {\n      border: 2px solid #c9d1d9;\n      background-color: #293b4e;\n    }\n    .dropdown-content {\n      padding-right: 15px;\n      padding-left: 15px;\n      height: 0; /* Inizia nascosto con altezza zero */\n      overflow: hidden;\n      transition: height 0.4s ease-out, padding 0.4s ease-out;\n      text-align: left;\n    }\n    .padding {\n      padding-top: 15px;\n      padding-bottom: 15px;\n    }\n    \n    .align-left {\n      text-align: left;\n    }\n    hr {\n      width: 96%;\n    }\n    .lista {\n      border: 2px solid #c9d1d9;\n      background-color:#0f5b69;\n      border-radius: 10px;\n      padding-right: 23px;\n      width: fit-content;\n      display: inline-block;\n    }\n    li {\n      text-align: left;\n    }\n    .bottone.active .arrow {\n      transform: rotate(180deg);\n    }\n    .arrow {\n      display: inline-block;\n      transition: transform 0.3s ease;\n    }\n    .bottone {\n      cursor: pointer;\n      padding: 15px;\n      margin: 0px;\n    }\n  </style>\n</head>\n<body>\n  <h1>[W9] - Assistenza clienti & Customer Care</h1>\n  <br>\n  <h3 class=\"align-left\">Richieste e risposte</h3>\n  {{ $json['Richieste e risposte'] }}\n  <br>\n  <hr>\n  <h2>Questi sono gli argomenti più richiesti in assoluto!</h2>\n  <div class=\"lista\">\n    <ol>\n      <li>{{ $json.output.analisi_richieste[0].tema_principale }}</li>\n      <li>{{ $json.output.analisi_richieste[1].tema_principale }}</li>\n      <li>{{ $json.output.analisi_richieste[2].tema_principale }}</li>\n    </ol>\n  </div>\n  <br><br>\n  <div style=\"width: 446px; display: inline-block;\">\n    <canvas id=\"mioGrafico\"></canvas>\n  </div>\n  <script src=\"https://cdn.jsdelivr.net/npm/chart.js\"></script>\n  <script>\n    // 1. Trova l'elemento canvas\n    const ctx = document.getElementById('mioGrafico');\n\n    // 2. Crea il grafico\n    new Chart(ctx, {\n      type: 'pie', // Puoi usare 'line', 'pie', 'doughnut', ecc.\n      data: {\n        labels: ['{{ $json.output.analisi_richieste[0].tema_principale }}', '{{ $json.output.analisi_richieste[1].tema_principale }}', '{{ $json.output.analisi_richieste[2].tema_principale }}'],\n        datasets: [{\n          label: 'Richieste',\n          data: [{{ $json.output.analisi_richieste[0].conteggio_richieste }}, {{ $json.output.analisi_richieste[1].conteggio_richieste }}, {{ $json.output.analisi_richieste[2].conteggio_richieste }}],\n          backgroundColor: ['rgba(255, 165, 0, 0.8)', 'rgba(0, 150, 69, 0.8)', 'rgba(79, 38, 131, 0.8)'],\n        }]\n      },\n      options: {\n        scales: {\n          y: {\n            beginAtZero: true\n          }\n        }\n      }\n    });\n  </script>\n  <script>\n    function toggleDropdown(buttonElement) {\n      // 1. Identifica gli elementi\n      const content = buttonElement.nextElementSibling; // Il contenuto\n        \n      // 2. Cambia la direzione della freccia (e lo stato del bottone)\n      buttonElement.classList.toggle('active');\n\n      // 3. Gestisce l'animazione di scorrimento\n      if (content.style.height === '' || content.style.height === '0px') {\n        // Imposta l'altezza a 'scrollHeight' per l'animazione (altezza reale del contenuto)\n        content.style.height = content.scrollHeight + 'px';\n        content.classList.add('padding');\n      }\n      else {\n        // Se aperto, chiudi\n        // Prima metti l'altezza corrente\n        content.style.height = content.offsetHeight + 'px'; \n        // Forza il reflow (lettura dell'altezza)\n        content.offsetHeight; \n        // Poi imposta a 0 per la transizione di chiusura\n        content.style.height = '0px';\n        content.classList.remove('padding');\n      }\n    }\n  </script>\n</body>\n</html>"
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        576,
+        256
+      ],
+      "id": "ec3078e9-3052-4281-a6a8-9e467ae2218d",
+      "name": "Pagina web"
+    },
+    {
+      "parameters": {
+        "content": "Recupera le risposte raccolte nella tabella.",
+        "height": 224,
+        "width": 160
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -928,
+        80
+      ],
+      "id": "02f0f580-f4d4-4494-a677-367d5dc5be44",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Questo nodo aggrega tutte le risposte formattate e le richieste per permetterne l'elaborazione nei nodi successivi.",
+        "height": 272,
+        "width": 192,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        112
+      ],
+      "id": "ed802390-592d-4758-a188-f41332f9b3d7",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Questo nodo rifinisce la formattazione precedente eliminando i caratteri separatori introdotti dall'aggregazione.\nIl fine è la creazione della versione definitiva per la pagina web.",
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        544
+      ],
+      "id": "caf5fe39-8414-4e3e-87dd-d18ad68202ea",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "Extra extra mile",
+          "mode": "list",
+          "cachedResultName": "Extra extra mile"
+        },
+        "returnAll": true,
+        "options": {
+          "outputColumns": [
+            "richiesta",
+            "risposta"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1120,
+        352
+      ],
+      "id": "0d86a032-b749-4d40-9394-2f95ca7f3243",
+      "name": "Select rows from a table"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "Domanda",
+        "joinMode": "enrichInput1",
+        "options": {
+          "multipleMatches": "first"
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -672,
+        256
+      ],
+      "id": "10626f97-e1db-4d99-bddf-61e34c8d3702",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "content": "Rinomina i campi del nodo precedente per accomunarli allo standard, in modo che venga mostrata solo una versione in caso di corrispondenza delle tabelle.",
+        "width": 208,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        496
+      ],
+      "id": "ac6e7f4c-2751-4545-b3ae-423ff595a033",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d178f8d7-003f-4cd8-b18e-cf435cb5f9d7",
+              "name": "Richiesta e risposta",
+              "value": "=  <div class=\"dropdown\">\n    <p class=\"bottone\" onclick=\"toggleDropdown(this)\"><span class=\"arrow\">▼</span> {{ $json.Domanda }}</p>\n    <div class=\"dropdown-content\">{{ $json.Risposta }}</div>\n  </div>",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "include": "selected",
+        "includeFields": "Domanda",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -448,
+        256
+      ],
+      "id": "37a74473-39a9-496f-ab6b-1117a5e24bf4",
+      "name": "Formatta HTML"
+    },
+    {
+      "parameters": {
+        "content": "Recupera le risposte raccolte nella tabella.",
+        "height": 240,
+        "width": 192
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1168,
+        272
+      ],
+      "id": "35ffd682-1467-4d1c-9449-a28da36cf713",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "29849bb1-7d2d-4cec-904e-990653c2cf77",
+              "name": "Domanda",
+              "value": "={{ $json.richiesta }}",
+              "type": "string"
+            },
+            {
+              "id": "6b3e1e70-2e0f-4d72-8b68-804c19b15dd4",
+              "name": "Risposta",
+              "value": "={{ $json.risposta }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -896,
+        352
+      ],
+      "id": "bc256568-446f-4963-ae45-7c897a03c514",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {
+    "Search records": [
+      {
+        "json": {
+          "id": "rec2Ih9e5Ah1Ix0Zo",
+          "createdTime": "2025-11-14T02:11:53.000Z",
+          "Domanda": "Cosa fanno i gatti?",
+          "Risposta": "I gatti sono animali domestici noti per una varietà di comportamenti. Tra le attività più comuni, i gatti dormono per gran parte della giornata, spesso in pisolini brevi e frequenti. Sono anche predatori naturali, quindi cacciano, giocano e inseguono oggetti, anche in casa. Si dedicano molto alla toelettatura, pulendosi il pelo con la lingua. Amano esplorare, arrampicarsi e osservare l'ambiente circostante da posizioni elevate. I gatti comunicano attraverso miagolii, fusa, soffi e il linguaggio del corpo, come la posizione delle orecchie e della coda. Molti gatti apprezzano anche le coccole e l'interazione con i loro proprietari.\n"
+        }
+      },
+      {
+        "json": {
+          "id": "recHwD9Ha78bX0pgM",
+          "createdTime": "2025-11-14T02:12:26.000Z",
+          "Domanda": "Cosa fa la regina di cuori?",
+          "Risposta": "La Regina di Cuori è un personaggio iconico del romanzo \"Le avventure di Alice nel Paese delle Meraviglie\" di Lewis Carroll. È nota per essere una sovrana tirannica, irascibile e autoritaria che governa il Paese delle Meraviglie. La sua frase più celebre è \"Tagliategli la testa!\", che pronuncia frequentemente per punire anche le più piccole infrazioni o per capriccio.\n\nLe sue azioni principali includono:\n\n-   **Dare ordini di esecuzione**: È la sua caratteristica più distintiva. Ordina la decapitazione di chiunque la infastidisca o non rispetti le sue regole, anche per motivi futili.\n-   **Giocare a croquet**: Organizza partite di croquet molto particolari, dove i fenicotteri vengono usati come mazze e i ricci come palle. Le regole sono spesso arbitrarie e cambiano a suo piacimento.\n-   **Terrorizzare i suoi sudditi**: I suoi sudditi, inclusi i soldati-carta, vivono nel costante timore della sua ira.\n-   **Essere irragionevole e capricciosa**: Le sue decisioni sono spesso dettate dall'umore e non dalla logica o dalla giustizia.\n\nIn sintesi, la Regina di Cuori è un simbolo di autorità arbitraria e tirannia, che agisce con prepotenza e crudeltà.\n"
+        }
+      },
+      {
+        "json": {
+          "id": "recX9CBawBTICV8FO",
+          "createdTime": "2025-11-14T02:06:32.000Z",
+          "Domanda": "cosa sono le carte trappola?",
+          "Risposta": "Le Carte Trappola in Yu-Gi-Oh! sono carte che ti aiutano con diversi effetti, simili alle Carte Magia, ma con la capacità di sorprendere l'avversario e disturbare i suoi attacchi e le sue strategie. La differenza principale è che possono essere attivate durante il turno del tuo avversario.\n\nPer attivare una Carta Trappola, devi prima Posizionarla coperta sul Terreno. Non puoi attivarla nello stesso turno in cui l'hai Posizionata; potrai attivarla a partire dall'inizio del turno successivo.\n\nEsistono diversi tipi di Carte Trappola:\n\n-   **Carte Trappola Normali**: Hanno un effetto ad uso singolo e, una volta risolto l'effetto, vengono mandate al Cimitero. Sono difficili da bloccare una volta attivate.\n-   **Carte Trappola Continue**: Rimangono sul Terreno una volta attivate e i loro effetti persistono finché sono scoperte. Possono avere effetti che limitano le scelte dell'avversario o infliggono danni lentamente.\n-   **Carte Contro-Trappola**: Vengono normalmente attivate in risposta all'attivazione di altre carte, spesso con effetti di annullamento. Sono efficaci contro Carte Magia o Trappola Normali, ma molte richiedono un costo per essere attivate.\n"
+        }
+      },
+      {
+        "json": {
+          "id": "receCzxEyHNPw9j7s",
+          "createdTime": "2025-11-14T02:12:42.000Z",
+          "Domanda": "Cosa fa terremoto?",
+          "Risposta": "Un terremoto è un fenomeno naturale causato dal rilascio improvviso di energia accumulata nella crosta terrestre, che genera onde sismiche. Queste onde si propagano attraverso la Terra e possono causare una serie di effetti, tra cui:\n\n-   **Scuotimento del terreno**: È l'effetto più comune e diretto. Il terreno trema e si muove, con intensità variabile a seconda della magnitudo del terremoto e della distanza dall'epicentro.\n-   **Danni a edifici e infrastrutture**: Lo scuotimento può provocare il crollo di edifici, ponti, strade e altre strutture, specialmente se non sono progettate per resistere a eventi sismici.\n-   **Frane e smottamenti**: Le vibrazioni possono destabilizzare pendii e terreni, causando frane, smottamenti e caduta massi, soprattutto in aree montuose o collinari.\n-   **Tsunami**: Se un terremoto avviene sotto l'oceano e sposta una grande massa d'acqua, può generare uno tsunami, ovvero una serie di onde marine giganti che possono causare devastazione lungo le coste.\n-   **Liquefazione del suolo**: In terreni sabbiosi e saturi d'acqua, le vibrazioni intense possono far perdere al suolo la sua consistenza, trasformandolo in una sorta di fango liquido che non è più in grado di sostenere il peso delle strutture.\n-   **Fessurazioni e deformazioni del terreno**: Possono apparire crepe e fessure sulla superficie terrestre, e in alcuni casi si possono verificare sollevamenti o abbassamenti del suolo.\n-   **Interruzione di servizi**: Terremoti significativi possono causare interruzioni di corrente elettrica, gas, acqua e comunicazioni.\n\nIn sintesi, un terremoto è un evento geologico che può avere conseguenze significative e spesso distruttive sull'ambiente naturale e sulle opere umane.\n"
+        }
+      },
+      {
+        "json": {
+          "id": "recmj3wts37RXO3oj",
+          "createdTime": "2025-11-14T01:04:05.000Z",
+          "Domanda": "Cosa sono le carte trappola continue?",
+          "Risposta": "Le Carte Trappola Continue sono un tipo di Carta Trappola in Yu-Gi-Oh! che, una volta attivate, rimangono scoperte sul Terreno e i loro effetti persistono finché la carta rimane lì. A differenza delle Carte Trappola Normali, che hanno un effetto \"usa e getta\" e vengono mandate al Cimitero dopo la risoluzione, le Carte Trappola Continue possono avere effetti che si attivano in momenti specifici, si applicano costantemente o possono essere attivati più volte finché la carta è sul campo.\n\nCaratteristiche principali:\n-   **Permanenza sul Terreno**: Una volta attivate, rimangono sul Terreno scoperte.\n-   **Effetti Duraturi**: I loro effetti possono essere continui, attivati in fasi specifiche o richiedere un costo per essere riattivati.\n-   **Tempistiche di Attivazione**: Come tutte le Carte Trappola, possono essere attivate solo dopo essere state Posizionate coperte sul Terreno per almeno un turno (non possono essere attivate nello stesso turno in cui sono state Posizionate).\n-   **Vulnerabilità**: Se la Carta Trappola Continua viene distrutta o rimossa dal Terreno, i suoi effetti cessano.\n\nSono utili per stabilire una presenza sul campo che può supportare i tuoi mostri, ostacolare l'avversario o creare combo strategiche nel corso di più turni.\n"
+        }
+      },
+      {
+        "json": {
+          "id": "recz8ZZrQm1PKsSmr",
+          "createdTime": "2025-11-14T01:05:45.000Z",
+          "Domanda": "Cosa sono le carte magia equipaggiamento?",
+          "Risposta": "Le Carte Magia Equipaggiamento sono un tipo specifico di Carta Magia in Yu-Gi-Oh! che vengono utilizzate per potenziare o modificare un mostro specifico sul Terreno.\n\nEcco le loro caratteristiche principali:\n\n-   **Bersaglio e Equipaggiamento**: Quando attivi una Carta Magia Equipaggiamento, devi scegliere un mostro scoperto sul Terreno come bersaglio e equipaggiarla a quel mostro. La carta rimane sul Terreno, \"equipaggiata\" al mostro.\n-   **Effetti Continui**: Finché la Carta Magia Equipaggiamento rimane equipaggiata al mostro, i suoi effetti sono attivi. Questi effetti possono variare notevolmente, includendo:\n    -   Aumenti o diminuzioni di ATK/DEF.\n    -   Concessione di nuove abilità al mostro equipaggiato.\n    -   Protezione da certi effetti o distruzioni.\n-   **Dipendenza dal Mostro Equipaggiato**: Se il mostro a cui è equipaggiata la Carta Magia Equipaggiamento viene distrutto, rimosso dal Terreno, coperto o cambia il suo controllore, la Carta Magia Equipaggiamento perde il suo bersaglio e viene automaticamente distrutta e mandata al Cimitero.\n-   **Tempistiche di Attivazione**: Come la maggior parte delle Carte Magia, le Carte Magia Equipaggiamento possono essere attivate durante la tua Main Phase.\n\nSono strumenti strategici molto utili per rafforzare i tuoi mostri chiave o per indebolire quelli dell'avversario, ma richiedono attenzione alla protezione del mostro a cui sono equipaggiate.\n"
+        }
+      }
+    ],
+    "Analizza temi": [
+      {
+        "json": {
+          "output": {
+            "analisi_richieste": [
+              {
+                "tema_principale": "Carte da gioco",
+                "conteggio_richieste": "4"
+              },
+              {
+                "tema_principale": "Animali",
+                "conteggio_richieste": "1"
+              },
+              {
+                "tema_principale": "Fenomeni naturali",
+                "conteggio_richieste": "1"
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Analizza temi",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Analizza temi",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Analizza temi",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Pagina web",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Analizza temi": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pagina web": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Formatta HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatta HTML": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "b64de188-d865-440e-8b3d-d90d0e2a2ded",
+  "meta": {
+    "instanceId": "285e6b7035d57255323414f2adfae0530b9d9fde4f34f40ef0775256340f9783"
+  },
+  "id": "NyoJGWxgks6KCiYN",
+  "tags": [
+    {
+      "updatedAt": "2026-04-04T06:48:06.468Z",
+      "createdAt": "2026-04-04T06:48:06.468Z",
+      "id": "1feZyl26xVh8lSEw",
+      "name": "HTML"
+    },
+    {
+      "updatedAt": "2026-04-03T18:18:57.179Z",
+      "createdAt": "2026-04-03T18:18:57.179Z",
+      "id": "7yAIDtU7nxjDJxeG",
+      "name": "Webhook"
+    },
+    {
+      "updatedAt": "2026-04-03T03:07:44.457Z",
+      "createdAt": "2026-04-03T03:07:44.457Z",
+      "id": "EQhQpxyhby4SAoHB",
+      "name": "Airtable"
+    },
+    {
+      "updatedAt": "2026-04-04T06:00:12.170Z",
+      "createdAt": "2026-04-04T06:00:12.170Z",
+      "id": "KWJncZWeD4iBJ6fB",
+      "name": "Postgres"
+    },
+    {
+      "updatedAt": "2026-04-02T03:02:46.710Z",
+      "createdAt": "2026-04-02T03:02:46.710Z",
+      "id": "oR1knSWoKLbEg04u",
+      "name": "IA"
+    }
+  ]
+}

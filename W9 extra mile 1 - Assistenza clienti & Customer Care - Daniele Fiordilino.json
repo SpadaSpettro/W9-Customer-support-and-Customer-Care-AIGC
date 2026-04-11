@@ -1,0 +1,580 @@
+{
+  "name": "W9 extra mile 1 - Assistenza clienti & Customer Care - Daniele Fiordilino",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "app2eQXE15kB0Hs1G",
+          "mode": "list",
+          "cachedResultName": "Base",
+          "cachedResultUrl": "https://airtable.com/app2eQXE15kB0Hs1G"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblIOGD0MR4vl323u",
+          "mode": "list",
+          "cachedResultName": "[W9] - Assistenza clienti & Customer Care",
+          "cachedResultUrl": "https://airtable.com/app2eQXE15kB0Hs1G/tblIOGD0MR4vl323u"
+        },
+        "options": {
+          "fields": [
+            "Risposta"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -448,
+        128
+      ],
+      "id": "d5533e8c-b412-4f31-977a-0eb10b71ee7f",
+      "name": "Search records",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "yIQnWS75MrmqGBYI",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        16,
+        224
+      ],
+      "id": "1f7deae3-9d2d-45fc-98c2-fbeb743ef63e",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "M5znk5f1CeiRvNeL",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"valutazione_qualita\": \"CRITICO\",\n  \"criticità\": [\n    {\n      \"tipo_criticità\": \"Imprecisione\",\n      \"spiegazione\": \"L'anno di fondazione citato è errato di 5 anni.\"\n    },\n    {\n      \"tipo_criticità\": \"Vaghezza\",\n      \"spiegazione\": \"La risposta usa termini generici come 'le cose' anziché 'i parametri di configurazione'.\"\n    }\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        144,
+        224
+      ],
+      "id": "d0a8a370-fab2-424e-bd61-6494b4642fb8",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        352,
+        128
+      ],
+      "id": "ae536fd0-c470-4bf4-bb33-efb62ff9997d",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "folderId": "1Gls0TOSdaLzcFP5gtwTjN6CiPvKBjVV8",
+        "title": "=Report W9 {{ $today.toLocaleString() }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        352,
+        400
+      ],
+      "id": "34a2bf6f-f773-4c6a-ba63-f89edef06185",
+      "name": "Create a document",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "jXy8nfkZFwpWbfGV",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        576,
+        224
+      ],
+      "id": "db408100-a4b4-4ca6-84cc-b6e54478687b",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.documentId }}",
+          "mode": "id"
+        },
+        "options": {
+          "fileName": "={{ $('Merge1').item.json.name }}.docx"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1024,
+        224
+      ],
+      "id": "dd7e9456-4773-47ba-b587-53cb664b3f18",
+      "name": "Download file",
+      "retryOnFail": false,
+      "maxTries": 2,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "yFtMWGIpUi0iSkyM",
+          "name": "Google Drive OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "daniele22fiordilino@hotmail.it",
+        "subject": "Report criticità chatbot W9",
+        "emailType": "text",
+        "message": "=Ecco il report sull'analisi delle risposte del chatbot registrate in Airtable e Supabase.",
+        "options": {
+          "appendAttribution": true,
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {}
+            ]
+          },
+          "senderName": "n8n"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1248,
+        224
+      ],
+      "id": "36a38668-ab98-4979-b1ae-0fbe39cddc48",
+      "name": "Send a message",
+      "webhookId": "1ba85931-3a0a-4fa5-8a34-f0974ac9fea8",
+      "retryOnFail": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "bn2PrEsQWHI2g4na",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -896,
+        400
+      ],
+      "id": "a7c25ddb-9c47-4147-83ac-1c5c6c7632b6",
+      "name": "Start",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analizza criticamente le seguenti risposte fornite dall'AI. Rispetta rigorosamente i criteri e il formato JSON.\n\nRisposte da Analizzare:\n{{ $json.Risposta }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Sei un analista di qualità di contenuti AI. Il tuo obiettivo è valutare le risposte fornite in input, identificando eventuali criticità.  **Criteri di Criticità (Focus):** 1.  **Imprecisione/Fatti Errati:** Il contenuto contiene errori fattuali o informazioni non aggiornate? 2.  **Ambiguità/Vaghezza:** Le risposte sono troppo generiche, vaghe o non affrontano il cuore della domanda originale? 3.  **Completezza:** La risposta è incompleta o omette passaggi chiave (se si tratta di istruzioni/passaggi)? 4.  **Tono:** Il tono è inappropriato (es. troppo informale per un contesto professionale)?  **Istruzioni:** 1.  Analizza attentamente il testo della risposta. 2.  Per ogni criticità identificata, fornisci una breve spiegazione. 3.  Il tuo output DEVE essere un oggetto JSON valido, anche se non trovi criticità.  **Formato di Output JSON richiesto (Esempio):** {   \"valutazione_qualita\": \"CRITICO\" | \"ACCETTABILE\" | \"ECCELLENTE\",   \"criticità\": [     {       \"tipo_criticità\": \"Imprecisione\",       \"spiegazione\": \"L'anno di fondazione citato è errato di 5 anni.\"     },     {       \"tipo_criticità\": \"Vaghezza\",       \"spiegazione\": \"La risposta usa termini generici come 'le cose' anziché 'i parametri di configurazione'.\"     }   ] }"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        0,
+        0
+      ],
+      "id": "5ee1c4f3-4b1f-4937-87d6-2a03f9422928",
+      "name": "Analista"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "=Risposta:\n{{ $json.Risposta }}\nValutazione:\n{{ $json.output.valutazione_qualita }}\n\nCriticità:\n{{ $json.output['criticità'][0]['tipo_criticità'] }}\n{{ $json.output['criticità'][0].spiegazione }}\n\n{{ $json.output['criticità'][1]['tipo_criticità'] }}\n{{ $json.output['criticità'][1].spiegazione }}\n\n\n"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        800,
+        224
+      ],
+      "id": "9f3ea0d9-bf4d-4819-b144-6c837a774a12",
+      "name": "Scrivi sul documento",
+      "executeOnce": false,
+      "retryOnFail": false,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "jXy8nfkZFwpWbfGV",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Recupera le risposte registrate nella tabella.",
+        "height": 224,
+        "width": 160
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        48
+      ],
+      "id": "7c94bfbc-8595-4ae1-b0ed-277c1d248dc4",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "Extra extra mile",
+          "mode": "list",
+          "cachedResultName": "Extra extra mile"
+        },
+        "returnAll": true,
+        "options": {
+          "outputColumns": [
+            "risposta"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -672,
+        544
+      ],
+      "id": "48b73931-a823-46e4-85d1-e289a017920b",
+      "name": "Select rows from a table"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6b3e1e70-2e0f-4d72-8b68-804c19b15dd4",
+              "name": "Risposta",
+              "value": "={{ $json.risposta }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -448,
+        544
+      ],
+      "id": "1d9563c0-8056-472a-9b47-669e1ba0e17f",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "Risposta",
+        "joinMode": "enrichInput1",
+        "options": {
+          "multipleMatches": "first"
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -224,
+        128
+      ],
+      "id": "554d3adc-c01c-407a-a316-f0ac03cac3b8",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "content": "Rinomina il campo del nodo precedente per accomunarlo allo standard, in modo che venga elaborato più facilmente.",
+        "height": 128,
+        "width": 208,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -512,
+        688
+      ],
+      "id": "67a65266-433f-4e3f-940a-48d3bcba65f5",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Recupera le risposte registrate nella tabella.",
+        "height": 224,
+        "width": 192
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        480
+      ],
+      "id": "238e000a-9a71-4e5f-8655-53ee647f9b1b",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Analista",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Analista",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a document": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Scrivi sul documento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create a document",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analista": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrivi sul documento": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Analista",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "4bbf29bb-19a4-4774-87d9-a91ed3cbff60",
+  "meta": {
+    "instanceId": "285e6b7035d57255323414f2adfae0530b9d9fde4f34f40ef0775256340f9783"
+  },
+  "id": "RTougWPG8hNu083X",
+  "tags": [
+    {
+      "updatedAt": "2026-04-02T02:22:20.430Z",
+      "createdAt": "2026-04-02T02:22:20.430Z",
+      "id": "4cDUE6nfNbvVML0X",
+      "name": "Gmail"
+    },
+    {
+      "updatedAt": "2026-04-03T03:07:44.457Z",
+      "createdAt": "2026-04-03T03:07:44.457Z",
+      "id": "EQhQpxyhby4SAoHB",
+      "name": "Airtable"
+    },
+    {
+      "updatedAt": "2026-04-02T02:24:19.040Z",
+      "createdAt": "2026-04-02T02:24:19.040Z",
+      "id": "ExTLzdRyt6LJs0cw",
+      "name": "Google Drive"
+    },
+    {
+      "updatedAt": "2026-04-04T06:00:12.170Z",
+      "createdAt": "2026-04-04T06:00:12.170Z",
+      "id": "KWJncZWeD4iBJ6fB",
+      "name": "Postgres"
+    },
+    {
+      "updatedAt": "2026-04-02T03:02:46.710Z",
+      "createdAt": "2026-04-02T03:02:46.710Z",
+      "id": "oR1knSWoKLbEg04u",
+      "name": "IA"
+    },
+    {
+      "updatedAt": "2026-04-03T22:02:30.420Z",
+      "createdAt": "2026-04-03T22:02:30.420Z",
+      "id": "vEzaPJhvxUWx7lot",
+      "name": "Google Docs"
+    }
+  ]
+}

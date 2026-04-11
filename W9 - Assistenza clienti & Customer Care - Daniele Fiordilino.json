@@ -1,0 +1,800 @@
+{
+  "name": "W9 - Assistenza clienti & Customer Care - Daniele Fiordilino",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Sono un assistente pensato per rispondere alle richieste in merito alle regole di Yu-Gi-Oh! (ver. 9.0).\nCosa vuoi sapere?",
+        "options": {
+          "inputPlaceholder": "Scrivi qui la tua richiesta...",
+          "subtitle": "Yu-Gi-Oh! ver. 9.0",
+          "title": "Chat con chatbot specifico",
+          "customCss": ":root {\n  /* Colors */\n  --chat--color-primary: #e74266;\n  --chat--color-primary-shade-50: #db4061;\n  --chat--color-primary-shade-100: #cf3c5c;\n  --chat--color-secondary: #20b69e;\n  --chat--color-secondary-shade-50: #1ca08a;\n  --chat--color-white: #ffffff;\n  --chat--color-light: #f2f4f8;\n  --chat--color-light-shade-50: #e6e9f1;\n  --chat--color-light-shade-100: #c2c5cc;\n  --chat--color-medium: #d2d4d9;\n  --chat--color-dark: #101330;\n  --chat--color-disabled: #d2d4d9;\n  --chat--color-typing: #404040;\n  --chat--color-black: #000000;\n  --chat--color-lightblue: #bfdfef;\n\n  /* Base Layout */\n  --chat--spacing: 1rem;\n  --chat--border-radius: 0.25rem;\n  --chat--transition-duration: 0.15s;\n  --chat--font-family: (\n    -apple-system,\n    BlinkMacSystemFont,\n    'Segoe UI',\n    Roboto,\n    Oxygen-Sans,\n    Ubuntu,\n    Cantarell,\n    'Helvetica Neue',\n    sans-serif,\n    Arial\n  );\n\n  /* Window Dimensions */\n  --chat--window--width: 400px;\n  --chat--window--height: 600px;\n  --chat--window--bottom: var(--chat--spacing);\n  --chat--window--right: var(--chat--spacing);\n  --chat--window--z-index: 9999;\n  --chat--window--border: 1px solid var(--chat--color-light-shade-50);\n  --chat--window--border-radius: var(--chat--border-radius);\n  --chat--window--margin-bottom: var(--chat--spacing);\n\n  /* Header Styles */\n  --chat--header-height: auto;\n  --chat--header--padding: var(--chat--spacing);\n  --chat--header--background: var(--chat--color-dark);\n  --chat--header--color: var(--chat--color-light);\n  --chat--header--border-top: none;\n  --chat--header--border-bottom: 1px solid;\n  --chat--header--border-left: none;\n  --chat--header--border-right: none;\n  --chat--heading--font-size: 2em;\n  --chat--subtitle--font-size: inherit;\n  --chat--subtitle--line-height: 1.8;\n\n  /* Message Styles */\n  --chat--message--font-size: 1rem;\n  --chat--message--padding: var(--chat--spacing);\n  --chat--message--border-radius: 1.17rem;\n  --chat--message-line-height: 1.5;\n  --chat--message--margin-bottom: calc(var(--chat--spacing) * 1);\n  --chat--message--bot--background: #5f9ea0;\n  --chat--message--bot--color: var(--chat--color-black);\n  --chat--message--bot--border: none;\n  --chat--message--user--background: #87cefa;\n  --chat--message--user--color: var(--chat--color-black);\n  --chat--message--user--border: none;\n  --chat--message--pre--background: rgba(0, 0, 0, 0.05);\n  --chat--messages-list--padding: var(--chat--spacing);\n\n  /* Toggle Button */\n  --chat--toggle--size: 64px;\n  --chat--toggle--width: var(--chat--toggle--size);\n  --chat--toggle--height: var(--chat--toggle--size);\n  --chat--toggle--border-radius: 50%;\n  --chat--toggle--background: var(--chat--color-primary);\n  --chat--toggle--hover--background: var(--chat--color-primary-shade-50);\n  --chat--toggle--active--background: var(--chat--color-primary-shade-100);\n  --chat--toggle--color: var(--chat--color-white);\n\n  /* Input Area */\n  --chat--textarea--height: 50px;\n  --chat--textarea--max-height: 30rem;\n  --chat--input--font-size: inherit;\n  --chat--input--border: 0;\n  --chat--input--border-radius: 0;\n  --chat--input--padding: 0.8rem;\n  --chat--input--background: var(--chat--color-light);\n  --chat--input--text-color: initial;\n  --chat--input--line-height: 1.5;\n  --chat--input--placeholder--font-size: var(--chat--input--font-size);\n  --chat--input--border-active: 0;\n  --chat--input--left--panel--width: 2rem;\n\n  /* Button Styles */\n  --chat--button--color: var(--chat--color-dark);\n  --chat--button--background: var(--chat--color-primary);\n  --chat--button--padding: calc(var(--chat--spacing) * 1 / 2) var(--chat--spacing);\n  --chat--button--border-radius: var(--chat--border-radius);\n  --chat--button--hover--color: var(--chat--color-light);\n  --chat--button--hover--background: var(--chat--color-primary-shade-50);\n  --chat--close--button--color-hover: var(--chat--color-primary);\n\n  /* Send and File Buttons */\n  --chat--input--send--button--background: var(--chat--color-light);\n  --chat--input--send--button--color: var(--chat--color-dark);\n  --chat--input--send--button--background-hover: var(--chat--color-primary-shade-50);\n  --chat--input--send--button--color-hover: var(--chat--color-secondary-shade-50);\n  --chat--input--file--button--background: var(--chat--color-white);\n  --chat--input--file--button--color: var(--chat--color-secondary);\n  --chat--input--file--button--background-hover: var(--chat--input--file--button--background);\n  --chat--input--file--button--color-hover: var(--chat--color-secondary-shade-50);\n  --chat--files-spacing: 0.25rem;\n\n  /* Body and Footer */\n  --chat--body--background: var(--chat--color-light);\n  --chat--footer--background: var(--chat--color-light);\n  --chat--footer--color: var(--chat--color-dark);\n}\n\n\n/* You can override any class styles, too. Right-click inspect in Chat UI to find class to override. */\n.chat-message {\n\tmax-width: 50%;\n}",
+          "responseMode": "responseNodes"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -944,
+        256
+      ],
+      "id": "ee51b84c-3eee-4203-95fb-8f530894d7f4",
+      "name": "When chat message received",
+      "webhookId": "5d0f8c86-249a-4ee2-87df-abb90aed11ab",
+      "executeOnce": false,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        352
+      ],
+      "id": "589ff76b-8334-4b76-838f-c0220ab0ac27",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "M5znk5f1CeiRvNeL",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        -720,
+        912
+      ],
+      "id": "4ad98f19-f3f4-4f56-a9b6-c1d279815867",
+      "name": "Supabase Vector Store",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-embedding-001"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        1136
+      ],
+      "id": "b87db9e8-3ed3-45d7-85e9-071fafbd477c",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "M5znk5f1CeiRvNeL",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        -592,
+        1136
+      ],
+      "id": "453395ce-c341-4a54-b69e-34bb393be2bb",
+      "name": "Default Data Loader",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Use this tool to search for information about Yu-Gi-Oh! rules in the database.",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "topK": 3,
+        "includeDocumentMetadata": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        -464,
+        352
+      ],
+      "id": "bbee8f35-2ed5-46f5-ba83-4113a48c1cf5",
+      "name": "Supabase Vector Store1",
+      "notes": "Ottiene dal database vettoriale i 3 risultati più pertinenti rispetto alla richiesta inoltrata al chatbot."
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-embedding-001"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        560
+      ],
+      "id": "cd25ff50-6796-49fe-8e60-b026970c89a1",
+      "name": "Embeddings Google Gemini1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "M5znk5f1CeiRvNeL",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "app2eQXE15kB0Hs1G",
+          "mode": "list",
+          "cachedResultName": "Base",
+          "cachedResultUrl": "https://airtable.com/app2eQXE15kB0Hs1G"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblIOGD0MR4vl323u",
+          "mode": "list",
+          "cachedResultName": "[W9] - Assistenza clienti & Customer Care",
+          "cachedResultUrl": "https://airtable.com/app2eQXE15kB0Hs1G/tblIOGD0MR4vl323u"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Risposta": "={{ $json.output.Risposta }}",
+            "Domanda": "={{ $json.chatInput }}",
+            "Last Modified Time": "={{ $now }}"
+          },
+          "matchingColumns": [
+            "Domanda"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Domanda",
+              "displayName": "Domanda",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Risposta",
+              "displayName": "Risposta",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Last Modified Time",
+              "displayName": "Last Modified Time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        704,
+        384
+      ],
+      "id": "9c7e7190-8221-4b46-9b30-6e89ed153b45",
+      "name": "Create or update a record",
+      "executeOnce": false,
+      "retryOnFail": true,
+      "maxTries": 2,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "yIQnWS75MrmqGBYI",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"Risposta\": \"La risposta alla tua domanda è che la capitale della Francia è Parigi, una città nota per la sua arte, moda e monumenti iconici come la Torre Eiffel.\",\n  \"can_answer\": \"sì\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -32,
+        352
+      ],
+      "id": "db275d25-3baa-4c85-b5e4-4ab7b23caacc",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        256,
+        352
+      ],
+      "id": "0ead5bb0-0e36-4c4a-a8bb-aecb0a5194e9",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 4
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -592,
+        352
+      ],
+      "id": "a888ddda-462f-4bfa-b974-8a6c0de2ba19",
+      "name": "Memoria"
+    },
+    {
+      "parameters": {
+        "content": "Questo nodo serve per formattare la risposta fornita all'utente, evitando l'aggiunta di metadata.",
+        "height": 256,
+        "width": 166,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "a430ce1c-771d-45c5-90c4-5d1e5f0bbda6",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Questo nodo valuta la flag creata dall'AI Agent per proseguire in una delle operazioni successive.",
+        "height": 256,
+        "width": 166
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        448,
+        224
+      ],
+      "id": "0a4ac634-fdb6-4a5b-8886-ae22dcb78be9",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "formTitle": "Carica file",
+        "formDescription": "Carica i file che desideri vengano inseriti all'interno del database vettoriale di Supabase.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "File",
+              "fieldType": "file",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": true,
+          "ignoreBots": true
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -944,
+        816
+      ],
+      "id": "b2df85df-9f79-4d9f-aefd-5e7c5b1265a4",
+      "name": "Form di caricamento",
+      "webhookId": "03ba90af-ab5b-4ed3-a496-746ce6340e3a",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "Questo sottoflusso consente di caricare file nel database vettoriale su Supabase.\nAttivare i nodi utili in caso di necessità.",
+        "height": 544,
+        "width": 576,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -992,
+        752
+      ],
+      "id": "c78ac8d9-f15d-4d73-87c1-6c10bb92ae12",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -944,
+        1008
+      ],
+      "id": "51e2c11e-776d-41d7-85b2-9ef93fcd7895",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "yFtMWGIpUi0iSkyM",
+          "name": "Google Drive OAuth2 API"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "Extra extra mile",
+          "mode": "list",
+          "cachedResultName": "Extra extra mile"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "richiesta": "={{ $json.chatInput }}",
+            "inserita_il": "={{ $now.toLocaleString() }}",
+            "risposta": "={{ $json.output.Risposta }}"
+          },
+          "matchingColumns": [
+            "richiesta"
+          ],
+          "schema": [
+            {
+              "id": "inserita_il",
+              "displayName": "inserita_il",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "richiesta",
+              "displayName": "richiesta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "risposta",
+              "displayName": "risposta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        704,
+        192
+      ],
+      "id": "41b9671e-97a1-4139-993d-f01fded5b2f9",
+      "name": "Insert or update rows in a table",
+      "retryOnFail": true,
+      "maxTries": 2
+    },
+    {
+      "parameters": {
+        "message": "={{ $json.output.Risposta }}",
+        "waitUserReply": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chat",
+      "typeVersion": 1,
+      "position": [
+        256,
+        128
+      ],
+      "id": "7960bbe6-0fed-4eb8-b86b-d561d797f71d",
+      "name": "Risposta",
+      "alwaysOutputData": true,
+      "webhookId": "2c8cd788-f2b1-4faa-b0a9-f6febcbf1ce5",
+      "retryOnFail": true,
+      "maxTries": 2
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "description": "=Il chatbot W9 non è stato in grado di rispondere a questa richiesta:\n{{ $json.chatInput }}",
+        "jsonParameters": true,
+        "additionalFieldsJson": "{\n  \"requester\": {\n    \"name\": \"Utente\"\n  },\n  \"subject\": \"Richiesta risposta\",\n  \"status\": \"new\"\n}"
+      },
+      "type": "n8n-nodes-base.zendesk",
+      "typeVersion": 1,
+      "position": [
+        704,
+        576
+      ],
+      "id": "c896bab3-66e5-47ff-982b-2eea0a93ec6c",
+      "name": "Create a ticket",
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Sei un assistente esperto nel gioco di carte di Yu-Gi-Oh! e neutrale. Il tuo compito è duplice:\n1.  **Rispondere (priorità)** alla domanda fornita in 'input'.\n2.  **Valutare** la tua capacità di rispondere e generare un flag.\n\n**Istruzioni e Formato di Output:**\n\n**Devi** sempre restituire la tua risposta in un unico blocco JSON, rispettando esattamente la seguente struttura con due campi:\n\n1.  **`Risposta`**: Contiene il testo della risposta generata.\n2.  **`can_answer`**: Contiene il flag di valutazione.\n\n**Logica di Valutazione (`can_answer`):**\n\n* Se sei in grado di formulare una risposta completa, utile e basata sulla tua conoscenza:\n    * Genera la risposta completa per il campo `Risposta`.\n    * Imposta il campo `can_answer` su **\"Sì\"**.\n\n* Se la domanda richiede informazioni personali, accesso a sistemi esterni, o è completamente fuori dal tuo dominio di conoscenza, tale che non sei in grado di rispondere adeguatamente:\n    * Genera un messaggio neutro come \"Non sono in grado di rispondere a questa specifica richiesta.\" per il campo `Risposta`.\n    * Imposta il campo `can_answer` su **\"No\"**.\n\n**Esempio di Output (Risposta Possibile):**\n\n```json\n{\n  \"Risposta\": \"La risposta alla tua domanda è che la capitale della Francia è Parigi, una città nota per la sua arte, moda e monumenti iconici come la Torre Eiffel.\",\n  \"can_answer\": \"sì\"\n}\n\n**Esempio di Output (Risposta Impossibile):**\n\n```json\n{\n  \"Risposta\": \"Non sono in grado di rispondere a questa specifica richiesta.\",\n  \"can_answer\": \"no\"\n}",
+          "enableStreaming": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -672,
+        128
+      ],
+      "id": "82d35fb8-5df3-45b2-810c-02dbf609d21c",
+      "name": "Chatbot"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Esegui il parsing di questi dati: {{ JSON.stringify($json.output) }}.\nIl formato di output dovrà essere quello specificato dall'Output Parser.",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -96,
+        128
+      ],
+      "id": "0b6be0b1-bb5d-45fc-a061-48c202d020ef",
+      "name": "Parser Chain"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "25f0caf7-5965-45b1-8383-52a13c0e30c6",
+              "leftValue": "={{ $json.output.can_answer }}",
+              "rightValue": "sì",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        352
+      ],
+      "id": "79b9e329-b0b6-43b2-9edc-6b66f2545ef5",
+      "name": "If"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Chatbot",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Chatbot",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Parser Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Chatbot",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Parser Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memoria": {
+      "ai_memory": [
+        [
+          {
+            "node": "Chatbot",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Form di caricamento": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chatbot": {
+      "main": [
+        [
+          {
+            "node": "Parser Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parser Chain": {
+      "main": [
+        [
+          {
+            "node": "Risposta",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Insert or update rows in a table",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create or update a record",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create a ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "695f7f31-3d8a-41aa-9071-28469ec42743",
+  "meta": {
+    "instanceId": "285e6b7035d57255323414f2adfae0530b9d9fde4f34f40ef0775256340f9783"
+  },
+  "id": "KWL8fq7lxg9kLuqP",
+  "tags": [
+    {
+      "updatedAt": "2026-04-03T03:07:44.457Z",
+      "createdAt": "2026-04-03T03:07:44.457Z",
+      "id": "EQhQpxyhby4SAoHB",
+      "name": "Airtable"
+    },
+    {
+      "updatedAt": "2026-04-02T02:24:19.040Z",
+      "createdAt": "2026-04-02T02:24:19.040Z",
+      "id": "ExTLzdRyt6LJs0cw",
+      "name": "Google Drive"
+    },
+    {
+      "updatedAt": "2026-04-04T06:00:12.170Z",
+      "createdAt": "2026-04-04T06:00:12.170Z",
+      "id": "KWJncZWeD4iBJ6fB",
+      "name": "Postgres"
+    },
+    {
+      "updatedAt": "2026-04-04T05:59:15.152Z",
+      "createdAt": "2026-04-04T05:59:15.152Z",
+      "id": "U6IAeViIOvcYUw8R",
+      "name": "Chatbot"
+    },
+    {
+      "updatedAt": "2026-04-04T05:59:22.455Z",
+      "createdAt": "2026-04-04T05:59:22.455Z",
+      "id": "Yuks4LI6CON1V1cq",
+      "name": "Supabase"
+    },
+    {
+      "updatedAt": "2026-04-02T03:02:46.710Z",
+      "createdAt": "2026-04-02T03:02:46.710Z",
+      "id": "oR1knSWoKLbEg04u",
+      "name": "IA"
+    },
+    {
+      "updatedAt": "2026-04-03T18:19:18.434Z",
+      "createdAt": "2026-04-03T18:19:18.434Z",
+      "id": "zat83TUyFJDI96Br",
+      "name": "Zendesk"
+    }
+  ]
+}
