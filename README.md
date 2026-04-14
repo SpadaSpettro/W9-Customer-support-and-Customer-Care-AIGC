@@ -1,19 +1,17 @@
-###### W9 - Assistenza clienti \& Customer Care
+###### W9 - Customer Care
 
-Un chatbot che risponde alle domande su uno specifico argomento; le interazioni vengono salvate in una tabella AirTable e in una tabella Supabase, se il chatbot non riesce a rispondere viene aperto un ticket su Zendesk con i dettagli. Inoltre, a seguito di una richiesta web, risponde con una pagina che contiene informazioni in merito alle interazioni salvate, rappresentate anche graficamente. Infine, scova le criticità nelle risposte salvate e ne invia il report Google Doc al responsabile in azienda.
-
-
-
-###### Come utilizzare il progetto:
-
-**Il progetto è stato realizzato in n8n.**
-
-* Per visualizzare e utilizzare i flussi di lavoro sarà sufficiente scaricare i file .json e importarli in un worflow nella propria istanza di n8n.
-* In alternativa è possibile copiare il codice dai file .json e incollarlo in un proprio file .json da importare nella propria istanza di n8n.
+A chatbot that answers questions on a specific topic; interactions are saved in AirTable and in Supabase. If the chatbot is unable to answer, a ticket is opened on Zendesk with the details. Furthermore, following a web request, it responds with a page containing information about the saved interactions, including graphical representations. Finally, it identifies critical issues in the saved responses and sends the resulting Google Doc report to the company manager.
 
 
+###### How to use the project:
 
-###### Strumenti e tecnologie utilizzati:
+**The project was created in n8n.**
+
+* To view and use the workflows, simply download the .json files and import them into the workflows in your n8n instance.
+* Alternatively, you can copy the code from the .json files and paste it into your own .json files to import into your n8n instance.
+
+
+
+###### Tools and technologies used:
 
 **n8n, IA, AirTable, Supabase, Zendesk, HTML, CSS, JavaScript, Google Docs, Google Drive, Gmail, Postgres.**
-
